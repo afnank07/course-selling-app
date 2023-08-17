@@ -1,8 +1,3 @@
-// const express = require('express');
-// const {tokenAuthentication, jwtSecretKey} = require("../middleware/auth");
-// const { User, Admin, Course } = require('../db/index');
-// const jwt = require('jsonwebtoken');
-
 import express from "express";
 import {tokenAuthentication, jwtSecretKey} from "../middleware/auth";
 import { User, Admin, Course } from '../db/index';

@@ -20,7 +20,7 @@ function AppBar(){
             <div style={{
                 display: 'flex', 
                 justifyContent: 'space-between'}}>
-                <h2>Course Selling App</h2>
+                <h2>Elevate</h2>
                 <div>
                     <Typography 
                         variant="contained" 
@@ -42,7 +42,7 @@ function AppBar(){
         <div style={{
             display: 'flex', 
             justifyContent: 'space-between'}}>
-            <h2>Course Selling App</h2>
+            <h2>Elevate</h2>
             <div>
                 <Button 
                     variant="contained" 

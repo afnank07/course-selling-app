@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css'
 import Landing from './components/Landing';
@@ -7,11 +6,13 @@ import SignUp from './components/SignUp';
 import AppBar from './components/AppBar';
 import CreateCourse from './components/CreateCourse';
 import ShowCourses from './components/ShowCourses';
+import { RecoilRoot } from 'recoil';
 
 function App() {
   return (
     <div>
       <Router>
+        <RecoilRoot>
         <AppBar/>
         <Routes>
           <Route path='/' element={<Landing/>} />
@@ -20,6 +21,7 @@ function App() {
           <Route path="/about" element={<CreateCourse />} />
           <Route path="/courses" element={<ShowCourses />} />
         </Routes>
+        </RecoilRoot>
       </Router>
     </div>
   )
