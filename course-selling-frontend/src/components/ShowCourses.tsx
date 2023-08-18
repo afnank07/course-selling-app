@@ -8,9 +8,14 @@ import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import Typography from '@mui/material/Typography';
 import {useState, useEffect} from "react"
+import { useNavigate } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { courseIdAtom, courseTitleAtom, courseDescriptionAtom, coursePriceAtom, courseImageLinkAtom, coursePublishedAtom } from "../atom/courseAtom";
 
 function ShowCourses() {
     const [courses, setCourses] = useState([]);
+    // const [courseId, setCourseId] = useRecoilState(courseIdAtom);
+    // const navigate = useNavigate();
     
     // Add code to fetch courses from the server
     // and set it in the courses state variable.
@@ -19,7 +24,7 @@ function ShowCourses() {
             headers: { 'Authorization': "Bearer " + JSON.parse(window.localStorage.getItem("MY_JWT_TOKEN")) }
         }).then(resp => {
             console.log("resp: ", resp);
-            // console.log("resp: ", typeof JSON.parse(resp))
+            // console.log("resp: ", JSON.parse(resp))
             setCourses(resp.data);
         }).catch(err => console.log(err));
     },[]);
@@ -34,6 +39,7 @@ function ShowCourses() {
             price={c.price}
             imageLink={c.imageLink}
             published={c.published}
+            id={c._id}
         />)}
         
         </div>
@@ -42,22 +48,13 @@ function ShowCourses() {
 }
 
 function Course(props) {
-    // console.log("props: ", props);
-    // return <div>
-    //     {/* <Grid item lg={12} xs={6} md={8}> */}
-    //         {/* <div> */}
-    //             <Card variant="outlined" style={{display:'flex', width:300, justifyContent:'normal', margin:10}}>
-    //                 <div>
-    //                 <Typography variant="h5">{props.title}</Typography>
-    //                 <Typography variant="h5">{props.description}</Typography>
-    //                 <Typography variant="h5">{props.price}</Typography>
-    //                 <Typography variant="h5">{props.imageLink}</Typography>
-    //                 <Typography variant="h5">{props.published}</Typography>
-    //                 </div>
-    //             </Card>
-    //         {/* </div> */}
-    //     {/* </Grid> */}
-    // </div>
+    const navigate = useNavigate();
+    const [courseId, setCourseId] = useRecoilState(courseIdAtom);
+    const [courseTitle, setCourseTitle] = useRecoilState(courseTitleAtom);
+    const [courseDescription, setCourseDescription] = useRecoilState(courseDescriptionAtom);
+    const [coursePrice, setCoursePrice] = useRecoilState(coursePriceAtom);
+    const [courseImageLink, setCourseImageLink] = useRecoilState(courseImageLinkAtom);
+    const [coursePublished, setCoursePublished] = useRecoilState(coursePublishedAtom);
 
     return <div>
         <Grid item lg={12} xs={2} md={2} style={{ padding: 30 }}>
@@ -75,7 +72,15 @@ function Course(props) {
                 </CardContent>
                 <CardActions>
                     <Button size="small">Purchase</Button>
-                    <Button size="small">Edit</Button>
+                    <Button size="small" onClick={ () => {
+                        setCourseId(props.id)
+                        setCourseTitle(props.title)
+                        setCourseDescription(props.description)
+                        setCoursePrice(props.price)
+                        setCourseImageLink(props.imageLink)
+                        setCoursePublished(props.published)
+                        navigate('../edit')
+                        }}>Edit</Button>
                 </CardActions>
             </Card>
         {/* </div> */}

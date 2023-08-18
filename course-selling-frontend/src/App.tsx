@@ -6,6 +6,7 @@ import SignUp from './components/SignUp';
 import AppBar from './components/AppBar';
 import CreateCourse from './components/CreateCourse';
 import ShowCourses from './components/ShowCourses';
+import EditCourses from './components/EditCourses';
 import { RecoilRoot } from 'recoil';
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
           <Route path='/signup' element={<SignUp/>} />
           <Route path="/about" element={<CreateCourse />} />
           <Route path="/courses" element={<ShowCourses />} />
+          <Route path="/edit" element={<EditCourses />} />
         </Routes>
         </RecoilRoot>
       </Router>

@@ -1,6 +1,4 @@
 import { useState, useEffect } from "react";
-import { useRecoilState } from "recoil";
-import { titleAtom } from "../atom/createCourseAtom";
 import Card from '@mui/material/Card';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -10,8 +8,8 @@ import axios from 'axios';
 /// You need to add input boxes to take input for users to create a course.
 /// I've added one input so you understand the api to do it.
 function CreateCourse() {
-    // const [title, setTitle] = useState("");
-    const [title, setTitle] = useRecoilState(titleAtom);
+    const [title, setTitle] = useState("");
+    // const [title, setTitle] = useRecoilState(titleAtom);
     const [description, setDescription] = useState("");
     const [price, setPrice] = useState("");
     const [imageLink, setImageLink] = useState("");
