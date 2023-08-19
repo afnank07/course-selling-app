@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Card from '@mui/material/Card';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -25,8 +25,8 @@ function SignUp(){
             
             // console.log("resp: ", resp.data.message);
             // console.log("resp: ", resp.data.token);
-            alert(resp.data.message);
             window.localStorage.setItem('MY_JWT_TOKEN', JSON.stringify(resp.data.token));
+            alert(resp.data.message);
 
             if (userType === "Admin"){
                 window.location.replace('http://localhost:5173/about');

@@ -28,7 +28,7 @@ function AppBar(){
             <div style={{
                 display: 'flex', 
                 justifyContent: 'space-between'}}>
-                <h2>Elevate</h2>
+                <h2>Smart Courses</h2>
                 <div>
                     {userType=='Admin' && <Button
                     variant="contained" 
@@ -65,7 +65,7 @@ function AppBar(){
         <div style={{
             display: 'flex', 
             justifyContent: 'space-between'}}>
-            <h2>Elevate</h2>
+            <h2>Smart Courses</h2>
             <div>
                 <Button 
                     variant="contained" 

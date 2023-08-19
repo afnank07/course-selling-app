@@ -7,6 +7,7 @@ import express from "express";
 import {tokenAuthentication, jwtSecretKey} from "../middleware/auth";
 import { User, Admin, Course } from '../db/index';
 import jwt from 'jsonwebtoken';
+import mongoose from "mongoose";
 
 const router = express.Router();
 
@@ -53,12 +54,17 @@ router.post('/signup', async(req, res) => {
   });
   
   router.get('/me', tokenAuthentication, async(req, res)=>{
-    // console.log("req.headers.userName: ", req.headers.userName)
-    // console.log("typeof req.headers.userName: ", typeof req.headers.userName)
+    console.log("req.headers.userName: ", req.headers.userName)
+    console.log("typeof req.headers.userName: ", typeof req.headers.userName)
     let userName = null;
     if(typeof req.headers.userName === 'string'){
-      userName = JSON.parse(req.headers.userName)["userDetails"]["username"]
-    } else{
+      if('newUser' in JSON.parse(req.headers.userName)){
+        userName = JSON.parse(req.headers.userName)["newUser"]["username"]
+      }else{
+        userName = JSON.parse(req.headers.userName)["userDetails"]["username"]
+      }
+    }
+    else{
       userName = req.headers.userName
     }
     // console.log("userName: ", userName)
@@ -85,17 +91,21 @@ router.post('/signup', async(req, res) => {
     if (courseDetails){
       let userName = null;
       if(typeof req.headers.userName === 'string'){
-        userName = JSON.parse(req.headers.userName)["userDetails"]["username"]
+        if('newUser' in JSON.parse(req.headers.userName)){
+          userName = JSON.parse(req.headers.userName)["newUser"]["username"]
+        }else{
+          userName = JSON.parse(req.headers.userName)["userDetails"]["username"]
+        }
       } else{
         userName = req.headers.userName
       }
       const userDetails = await User.findOne({"username":userName});
-      console.log("userDetails: ", userDetails);
+      // console.log("userDetails: ", userDetails);
       // console.log("req.headers.userName: ", req.headers.userName);
-      console.log("userName: ", userName);
+      // console.log("userName: ", userName);
       if (userDetails){
-        console.log("courseDetails.id: ", courseDetails._id)
-        userDetails.purchasedCourse.push(courseDetails.id);
+        // console.log("courseDetails: ", courseDetails)
+        userDetails.purchasedCourse.push(courseDetails._id as mongoose.Types.ObjectId);
         await userDetails.save();
         res.json({ message: 'Course purchased successfully' })
       }else{
@@ -110,7 +120,11 @@ router.post('/signup', async(req, res) => {
   router.get('/purchasedCourses', tokenAuthentication, async(req, res) => {
     let userName = null;
     if(typeof req.headers.userName === 'string'){
-      userName = JSON.parse(req.headers.userName)["userDetails"]["username"]
+      if('newUser' in JSON.parse(req.headers.userName)){
+        userName = JSON.parse(req.headers.userName)["newUser"]["username"]
+      }else{
+        userName = JSON.parse(req.headers.userName)["userDetails"]["username"]
+      }
     } else{
       userName = req.headers.userName
     }
