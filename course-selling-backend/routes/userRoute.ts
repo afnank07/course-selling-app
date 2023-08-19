@@ -52,6 +52,22 @@ router.post('/signup', async(req, res) => {
     }
   });
   
+  router.get('/me', tokenAuthentication, async(req, res)=>{
+    // console.log("req.headers.userName: ", req.headers.userName)
+    // console.log("typeof req.headers.userName: ", typeof req.headers.userName)
+    let userName = null;
+    if(typeof req.headers.userName === 'string'){
+      userName = JSON.parse(req.headers.userName)["userDetails"]["username"]
+    } else{
+      userName = req.headers.userName
+    }
+    // console.log("userName: ", userName)
+    res.json({
+      // username: req.user.username
+      username: userName
+    })
+  });
+
   router.get('/courses', tokenAuthentication, async(req, res) => {
     // logic to list all courses
     const courseDetails = await Course.find({published: true});
@@ -65,11 +81,20 @@ router.post('/signup', async(req, res) => {
   
     const idNo = req.params.courseId;
     const courseDetails = await Course.findById(idNo);
-    // console.log("courseDetails: ", courseDetails);
+    console.log("courseDetails: ", courseDetails);
     if (courseDetails){
-      const userDetails = await User.findOne({"username":req.headers.userName});
+      let userName = null;
+      if(typeof req.headers.userName === 'string'){
+        userName = JSON.parse(req.headers.userName)["userDetails"]["username"]
+      } else{
+        userName = req.headers.userName
+      }
+      const userDetails = await User.findOne({"username":userName});
       console.log("userDetails: ", userDetails);
+      // console.log("req.headers.userName: ", req.headers.userName);
+      console.log("userName: ", userName);
       if (userDetails){
+        console.log("courseDetails.id: ", courseDetails._id)
         userDetails.purchasedCourse.push(courseDetails.id);
         await userDetails.save();
         res.json({ message: 'Course purchased successfully' })
@@ -83,8 +108,14 @@ router.post('/signup', async(req, res) => {
   });
   
   router.get('/purchasedCourses', tokenAuthentication, async(req, res) => {
+    let userName = null;
+    if(typeof req.headers.userName === 'string'){
+      userName = JSON.parse(req.headers.userName)["userDetails"]["username"]
+    } else{
+      userName = req.headers.userName
+    }
     // logic to view purchased courses
-    const userDetails = await User.findOne({"username":req.headers.userName}).populate('purchasedCourse');
+    const userDetails = await User.findOne({"username":userName}).populate('purchasedCourse');
     if (userDetails){
       res.json(userDetails.purchasedCourse);
     }else{

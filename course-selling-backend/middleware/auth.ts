@@ -21,6 +21,7 @@ const jwtSecretKey = String(Math.floor(Math.random() * 10000000));
 
 function tokenAuthentication(req: Request, res: Response, next: NextFunction){
   let token = req.headers.authorization;
+  // console.log("req.headers.authorization;: ", req.headers)
   // console.log("token in fxn: ", token)
   // console.log("jwtSecretKey in fxn: ", jwtSecretKey)
   if (token){

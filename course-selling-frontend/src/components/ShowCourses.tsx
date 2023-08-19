@@ -9,21 +9,26 @@ import CardActions from '@mui/material/CardActions';
 import Typography from '@mui/material/Typography';
 import {useState, useEffect} from "react"
 import { useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { courseIdAtom, courseTitleAtom, courseDescriptionAtom, coursePriceAtom, courseImageLinkAtom, coursePublishedAtom } from "../atom/courseAtom";
+import { userTypeAtom } from './../atom/userTypeAtom';
 
 function ShowCourses() {
     const [courses, setCourses] = useState([]);
+    const userType = useRecoilValue(userTypeAtom);
     // const [courseId, setCourseId] = useRecoilState(courseIdAtom);
     // const navigate = useNavigate();
     
     // Add code to fetch courses from the server
     // and set it in the courses state variable.
     useEffect(()=>{
-        axios.get("http://localhost:3000/admin/courses/", {
+        let ROUTE_URL = "http://localhost:3000/user/courses";
+        if (userType === "Admin") ROUTE_URL = "http://localhost:3000/admin/courses";
+
+        axios.get(ROUTE_URL, {
             headers: { 'Authorization': "Bearer " + JSON.parse(window.localStorage.getItem("MY_JWT_TOKEN")) }
         }).then(resp => {
-            console.log("resp: ", resp);
+            // console.log("resp: ", resp);
             // console.log("resp: ", JSON.parse(resp))
             setCourses(resp.data);
         }).catch(err => console.log(err));
@@ -49,6 +54,7 @@ function ShowCourses() {
 
 function Course(props) {
     const navigate = useNavigate();
+    const userType = useRecoilValue(userTypeAtom);
     const [courseId, setCourseId] = useRecoilState(courseIdAtom);
     const [courseTitle, setCourseTitle] = useRecoilState(courseTitleAtom);
     const [courseDescription, setCourseDescription] = useRecoilState(courseDescriptionAtom);
@@ -71,8 +77,7 @@ function Course(props) {
                     <Typography variant="h5">{props.published}</Typography>
                 </CardContent>
                 <CardActions>
-                    <Button size="small">Purchase</Button>
-                    <Button size="small" onClick={ () => {
+                    {userType=='Admin' && <Button size="small" onClick={ () => {
                         setCourseId(props.id)
                         setCourseTitle(props.title)
                         setCourseDescription(props.description)
@@ -80,7 +85,20 @@ function Course(props) {
                         setCourseImageLink(props.imageLink)
                         setCoursePublished(props.published)
                         navigate('../edit')
-                        }}>Edit</Button>
+                        }}>Edit</Button>}
+                    {userType=='User' && <Button size="small" onClick={ async () => {
+                        setCourseId(props.id)
+                        try{
+                            // console.log("props.id: ", props.id)
+                            const resp = await axios.post("http://localhost:3000/user/courses/"+String(props.id),{}, {
+                                headers: { 'Authorization': "Bearer " + JSON.parse(window.localStorage.getItem("MY_JWT_TOKEN")) }
+                            })
+                            alert(resp.data.message);
+                        } catch (err){
+                            console.log(err)
+                        }
+                        // navigate('../purchased')
+                        }}>Purchase</Button>}
                 </CardActions>
             </Card>
         {/* </div> */}

@@ -4,6 +4,7 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 
 /// You need to add input boxes to take input for users to create a course.
 /// I've added one input so you understand the api to do it.
@@ -16,17 +17,19 @@ function CreateCourse() {
     const [published, setPublished] = useState("");
     const [jwToken, setJwToken] = useState("");
 
+    const navigate = useNavigate();
+
     useEffect(()=>{
         const token = JSON.parse(window.localStorage.getItem('MY_JWT_TOKEN'));
         setJwToken(token);
     },[])
 
     function submit(){
-        console.log("Fetched Token: ", jwToken)
+        // console.log("Fetched Token: ", jwToken)
         axios.post("http://localhost:3000/admin/courses", {title, description, price, imageLink, published}, {
             headers: { 'Authorization': 'Bearer '+ jwToken}
         }).then((resp)=>{
-            console.log(resp.data);
+            // console.log(resp.data);
             alert(resp.data.message)
         }).catch(err=> console.log(err));
     }
@@ -74,7 +77,7 @@ function CreateCourse() {
                         onChange={(e)=>setPublished(e.target.value)}/>
                     <br /> <br />
                     <Button variant="contained" onClick={submit}>Submit</Button>
-                    <Button variant="contained" href="/courses" 
+                    <Button variant="contained" onClick={ () => {navigate('../courses')}}
                         style={{marginLeft:10}}
                     >Show Courses</Button>
                 </Card>

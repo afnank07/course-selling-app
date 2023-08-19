@@ -1,31 +1,39 @@
 import { atom } from 'recoil';
+import { recoilPersist } from 'recoil-persist'
+const { persistAtom } = recoilPersist()
 
 export const courseIdAtom = atom({
     key: "courseIdState",
-    default: ""
+    default: "",
+    effects_UNSTABLE: [persistAtom]
 })
 
 export const courseTitleAtom = atom({
     key: "courseTitleState",
-    default: ""
+    default: "",
+    effects_UNSTABLE: [persistAtom]
 })
 
 export const courseDescriptionAtom = atom({
     key: "courseDescriptionState",
-    default: ""
+    default: "",
+    effects_UNSTABLE: [persistAtom]
 })
 
 export const coursePriceAtom = atom({
     key: "coursePriceState",
-    default: ""
+    default: "",
+    effects_UNSTABLE: [persistAtom]
 })
 
 export const courseImageLinkAtom = atom({
     key: "courseImageLinkState",
-    default: ""
+    default: "",
+    effects_UNSTABLE: [persistAtom]
 })
 
 export const coursePublishedAtom = atom({
     key: "coursePublishedState",
-    default: ""
+    default: "",
+    effects_UNSTABLE: [persistAtom]
 })

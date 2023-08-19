@@ -7,7 +7,9 @@ import AppBar from './components/AppBar';
 import CreateCourse from './components/CreateCourse';
 import ShowCourses from './components/ShowCourses';
 import EditCourses from './components/EditCourses';
-import { RecoilRoot } from 'recoil';
+import { RecoilRoot, useRecoilValue } from 'recoil';
+import { userTypeAtom } from './atom/userTypeAtom';
+import PurchasedCourses from './components/PurchasedCourses';
 
 function App() {
   return (
@@ -19,14 +21,45 @@ function App() {
           <Route path='/' element={<Landing/>} />
           <Route path='/signin' element={<SignIn/>} />
           <Route path='/signup' element={<SignUp/>} />
-          <Route path="/about" element={<CreateCourse />} />
+          <Route path="/about" element={<AdminUser><CreateCourse /></AdminUser>} />
           <Route path="/courses" element={<ShowCourses />} />
-          <Route path="/edit" element={<EditCourses />} />
+          <Route path="/edit" element={<AdminUser><EditCourses /></AdminUser>} />
+          <Route path="/purchased" element={<PublicUser><PurchasedCourses /></PublicUser>} />
         </Routes>
         </RecoilRoot>
       </Router>
     </div>
   )
+}
+
+function AdminUser({children}){
+  const userType = useRecoilValue(userTypeAtom);
+  // console.log("userType: ", userType)
+  if (userType == "Admin"){
+    return <>
+    {children}
+    </>
+  }
+  else {
+    return <div>
+    You don't have access to the page! 
+    </div>
+  }
+}
+
+function PublicUser({children}){
+  const userType = useRecoilValue(userTypeAtom);
+  // console.log("userType: ", userType)
+  if (userType == "User"){
+    return <>
+    {children}
+    </>
+  }
+  else {
+    return <div>
+    You don't have access to the page! 
+    </div>
+  }
 }
 
 export default App;

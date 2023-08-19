@@ -1,4 +1,3 @@
-import React from 'react'
 import axios from 'axios';
 import Typography from '@mui/material/Typography';
 import CardMedia from '@mui/material/CardMedia';
@@ -7,36 +6,50 @@ import CardActions from '@mui/material/CardActions';
 import Button from '@mui/material/Button';
 import { Card, TextField } from '@mui/material';
 import { useState, useEffect } from 'react';
-import { useRecoilValue } from 'recoil';
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { courseIdAtom, courseTitleAtom, courseDescriptionAtom, 
     coursePriceAtom, courseImageLinkAtom, coursePublishedAtom } from "../atom/courseAtom";
 
 function EditCourses () {
-    const [editTitle, setEditTitle] = useState("");
-    const [editDescription, setEditDescription] = useState("");
-    const [editPrice, setEditPrice] = useState("");
-    const [editImageLink, setEditImageLink] = useState("");
-    const [editPublished, setEditPublished] = useState("");
-    // const [editJwToken, setEditJwToken] = useState("");
-
-    const [courseId, setCourseId] = useRecoilState(courseIdAtom);
+    const courseId = useRecoilValue(courseIdAtom);
     const [courseTitle, setCourseTitle] = useRecoilState(courseTitleAtom);
     const [courseDescription, setCourseDescription] = useRecoilState(courseDescriptionAtom);
     const [coursePrice, setCoursePrice] = useRecoilState(coursePriceAtom);
     const [courseImageLink, setCourseImageLink] = useRecoilState(courseImageLinkAtom);
     const [coursePublished, setCoursePublished] = useRecoilState(coursePublishedAtom);
 
+    const [editTitle, setEditTitle] = useState(courseTitle);
+    const [editDescription, setEditDescription] = useState(courseDescription);
+    const [editPrice, setEditPrice] = useState(coursePrice);
+    const [editImageLink, setEditImageLink] = useState(courseImageLink);
+    const [editPublished, setEditPublished] = useState(coursePublished);
+    const [JwToken, setJwToken] = useState("");
+
+
     useEffect(()=>{
-        console.log("courseTitle: ", courseTitle)
-        // async function getCourseData(){
-        //     try{
-        //         const resp = await axios.put("http://localhost:3000/admin/courses/"+courseId, ) 
-        //     } catch(err){
-        //         console.log(err);
-        //     }
-        // }
-    }, [])
+        const token = JSON.parse(window.localStorage.getItem('MY_JWT_TOKEN'));
+        setJwToken(token);
+    },[])
+
+
+    async function getCourseData(){
+        try{
+            let data = { 
+                "title": courseTitle, 
+                "description": courseDescription, 
+                "price": coursePrice, 
+                "imageLink": courseImageLink, 
+                "published": coursePublished }
+
+            const resp = await axios.put("http://localhost:3000/admin/courses/"+courseId, data, {
+                headers: {'Authorization' : 'Bearer '+ JwToken }
+            })
+            alert(resp.data.message);
+        } catch(err){
+            console.log(err);
+        }
+    }
+
 
   return (
     <div>
@@ -50,7 +63,7 @@ function EditCourses () {
                 <TextField variant='outlined' label='Edit Published' fullWidth={true} onChange={(e)=>{setEditPublished(e.target.value)}} />
                 <CardActions>
                     <Button size="small" onClick={()=>{
-
+                        getCourseData();
                     }}>Save</Button>
                     <Button size="small" onClick={()=>{
                         if (editTitle) setCourseTitle(editTitle);

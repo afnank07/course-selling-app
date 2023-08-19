@@ -3,40 +3,41 @@ import Card from '@mui/material/Card';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
 import axios from 'axios';
+import { useRecoilState } from "recoil";
+import { userTypeAtom } from "../atom/userTypeAtom";
+import { useNavigate } from "react-router-dom";
 
 function SignIn(){
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-
-    // function loginUser(){
-    //     axios.post("http://localhost:3000/admin/login", {}, {
-    //         headers: {
-    //             'username': email,
-    //             'password': password
-    //         }
-    //     }).then(resp=> {
-    //         console.log(resp.data.message);
-    //         window.localStorage.setItem('MY_JWT_TOKEN', JSON.stringify(resp.data.token));
-    //         alert(resp.data.message);
-    //         // Redirect to 'about' page
-    //         window.location.replace('http://localhost:5173/about');
-    //     }).catch(err=> console.log(err));
-    // }
+    const [userType, setUserType] = useRecoilState(userTypeAtom);
+    // const navigate = useNavigate();
 
     async function loginUser(){
+        let ROUTE_URL = "http://localhost:3000/user/login";
+        if (userType === "Admin") ROUTE_URL = "http://localhost:3000/admin/login";
+
         try{
-            const resp = await axios.post("http://localhost:3000/admin/login", {}, {
+            // console.log("userType: ", userType);
+            const resp = await axios.post(ROUTE_URL, {}, {
                 headers: {
                     'username': email,
                     'password': password
                 }
             })
-            console.log(resp.data.message);
+            // console.log(resp.data.message);
             window.localStorage.setItem('MY_JWT_TOKEN', JSON.stringify(resp.data.token));
             alert(resp.data.message);
             // Redirect to 'about' page
-            window.location.replace('http://localhost:5173/about');
+            // navigate('./about')
+            if (userType === "Admin"){
+                window.location.replace('http://localhost:5173/about');
+            } else {
+                window.location.replace('http://localhost:5173/');
+            }
         } catch (err) {
             console.log(err);
         }
@@ -49,6 +50,20 @@ function SignIn(){
             </div>
             <div style={{display:'flex', justifyContent:'center'}}>
                 <Card variant="outlined" style={{padding:20, width:400}}>
+                {/* <FormControl halfwidth> */}
+                Login as <Select
+                        value={userType}
+                        label="Age"
+                        sx = {{minWidth:150}}
+                        onChange={(e)=>{
+                            setUserType(e.target.value)
+                        }}
+                        >
+                        <MenuItem value={'User'}>User</MenuItem>
+                        <MenuItem value={'Admin'}>Admin</MenuItem> 
+                    </Select>
+                    <br /> <br />
+                {/* </FormControl> */}
                     <TextField 
                         fullWidth={true} 
                         id="outlined-basic" 
